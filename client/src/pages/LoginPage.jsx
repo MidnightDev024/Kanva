@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   const [bio, setBio] = useState("")
 
-  const [isDataSubmited, seIsDataSubmited] = useState("false")
+  const [isDataSubmited, setIsDataSubmited] = useState("false")
 
 
   return (
@@ -27,10 +27,33 @@ const LoginPage = () => {
           {currState}
           <img src={assets.arrow_icon} alt="" className='w-5 cursor-pointer' />
           </h2>
-          {currState === "Sing up" && (
-            <input type="text" className='p-2 border border-gray-500 rounded-md focus:outline-none' placeholder='Full Name' required/>
+
+          {currState === "Sing up" && !isDataSubmited && (
+            <input onChange={(e)=>setFullName(e.target.value)} value={fullName} type="text" className='p-2 border border-gray-500 rounded-md focus:outline-none' placeholder='Full Name' required/>
           )}
+
+          {!isDataSubmited && (
+              <>
+              <input type="email" onChange={(e)=>setEmail(e.target.value)} value={email} placeholder='Email Address' required className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'/>
+              <input type="password" onChange={(e)=>setPassword(e.target.value)} value={password} placeholder='Password' required className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500'/>
+              </>
+            )
+          }
+
+          {currState === "Sign up" && isDataSubmited && (
+              <textarea onChange={(e)=>setBio(e.target.value)} value={bio} rows={4} className='p-2 border border-gray-500 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500' placeholder='Provide a Short bio... ' required></textarea>
+            )
+          }
           
+          <button className='py-3 bg-gradient-to-r from-purple-400-to-violet-600 text-white rounded-md cursor-pointer'>
+            {currState === "Sign Up" ? "Create Account" : "Login Now"}
+          </button>
+
+          <div className='flex item-center gap-2 text-sm text-gary-500'>
+            <input type="checkbox" />
+            <p>Agree to terms of use and privacy policy</p>
+          </div>
+
       </form>
     </div>
   )
