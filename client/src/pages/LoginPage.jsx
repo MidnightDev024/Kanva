@@ -17,7 +17,7 @@ const LoginPage = () => {
 
 
   return (
-    <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur  -2xl'>
+    <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
       {/* --------- left ------------ */}
       <img src={assets.logo_big} alt="" className='w-[max(250px)]'/>
 
@@ -27,7 +27,7 @@ const LoginPage = () => {
           {currState}
           <img src={assets.arrow_icon} alt="" className='w-5 cursor-pointer' />
           </h2>
-
+ 
           {currState === "Sing up" && !isDataSubmited && (
             <input onChange={(e)=>setFullName(e.target.value)} value={fullName} type="text" className='p-2 border border-gray-500 rounded-md focus:outline-none' placeholder='Full Name' required/>
           )}
@@ -60,3 +60,28 @@ const LoginPage = () => {
 }
 
 export default LoginPage
+
+
+
+
+// import React from 'react'
+// import assets from '../assets/assets';
+
+// const LoginPage = () => {
+
+//   const [currState, setCurrState] = React.useState("Sign up")
+
+//   return (
+//     <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
+//       {/* --------Left----------- */}
+//       <img src={assets.logo_big} alt="" className='w-[min(30vw,250px)]'/>
+
+//       {/* --------Right----------- */}
+//       <form className='border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg'>
+//         <h2></h2>
+//       </form>
+//     </div>
+//   )
+// }
+
+// export default LoginPage
