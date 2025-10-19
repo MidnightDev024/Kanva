@@ -15,9 +15,11 @@ const ProfilePage = () => {
         <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
           <form className='flex flex-col gap-5 p-10 flex-1'>
             <h3 className='text-lg'>Profile Detail</h3>
-            <label htmlFor="avtar" className='flex items-center gap-3 cursor-pointer'></label>
+            <label htmlFor="avtar" className='flex items-center gap-3 cursor-pointer'>
             <input onChange={(e)=>setSelectedImage(e.target.files[0])} type="file" id='avatar' accept='.png, .jpg, .jpeg' hidden />
-            <img src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12`} />
+            <img src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
+            Upload Profile image
+            </label>
           </form>
           <img src="" alt="" />
         </div>
