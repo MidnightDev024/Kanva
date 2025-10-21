@@ -20,6 +20,7 @@ const ProfilePage = () => {
             <img src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
             Upload Profile image
             </label>
+            <input onChange={(e)=>setName(e.target.value)} name={name} type="text" required placeholder='Your Name' className='p-2 border border-gary-500 rounded-md focus:outline-none focus:ring-2 focud:ring-violet-500'/>
           </form>
           <img src="" alt="" />
         </div>
