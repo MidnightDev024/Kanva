@@ -21,8 +21,7 @@ const ProfilePage = () => {
           <form onSubmit={onSubmitHandler} className='flex flex-col gap-5 p-10 flex-1'>
             <h3 className='text-lg'>Profile Detail</h3>
             <label onClick={() => document.getElementById('avatar').click()} htmlFor="avatar" className='flex items-center gap-3 cursor-pointer'>
-            <input onChange={(e)=>setSelectedImage(e.target.files[0])} type="file" id='avatar' accept='.png, .jpg, .jpeg' hidden />
-            <img src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
+            <input onChange={(e)=>setSelectedImage(e.target.files[0])} type="file" id='avatar' accept='.png, .jpg, .jpeg' hidden />            <img required src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
             Upload Profile image
             </label>
             <input onChange={(e)=>setName(e.target.value)} name={name} type="text" required placeholder='Your Name' className='p-2 border border-gary-500 rounded-md focus:outline-none focus:ring-2 focud:ring-violet-500'/>
