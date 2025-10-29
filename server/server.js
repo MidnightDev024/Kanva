@@ -4,6 +4,7 @@ import cors from 'cors';
 import http from 'http';
 import { log } from 'console';
 import { connectdb } from './lib/db.js';
+import userRouter from './routes/userRoutes.js';
 
 // create an express app and an http server
 
@@ -18,6 +19,7 @@ app.use(cors());
 // Define a simple route
 
 app.use("/api/status", (req, res) => res.send("Server is running"));
+app.use("/api/auth", userRouter);
 
 // connect to the database
 await connectdb();
