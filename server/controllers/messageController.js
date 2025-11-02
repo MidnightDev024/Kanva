@@ -1,5 +1,5 @@
 // Get all users except the logged in user
-import User from "../models/User.js";
+import User from "../models/user.js";
 import Message from "../models/Message.js";
 import cloudinary from "../lib/cloudinary.js";
 import {io, userSocketMap} from "../server.js";
@@ -85,7 +85,7 @@ export const sendMessage = async (req, res) => {
 
         res.json({success: true, newMessage});
 
-     } catch (error) {
+    } catch (error) {
         console.log(error.message);
         res.json({success: false, message: error.message})
     }
