@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client"
+import { connect } from "mongoose";
 
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -31,7 +32,20 @@ export const authProvider = ({ Children }) => {
 
     // Login function to handle user authentication and socket connection
 
-    
+    const login = async (state, Credentials) => {
+        try {
+            const { data } = await axios.post('/api/auth/${state}', Credentials);
+            if (data.success) {
+                setAuthUser(data.userData);
+                connectSocket(data.userData);
+                axios.defaults.headers.common["token"] = data.token;
+                setToken(data.token);
+                localStorage.setItem("token", data.token); 
+            }
+        } catch (error) {
+
+        }
+    }
 
     // connect socket function to handle socket connection and online users update
     const connectSocket = (userData) => {
