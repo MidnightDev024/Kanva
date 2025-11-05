@@ -2,7 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import toast, { Toaster } from "react-hot-toast";
 import { io } from "socket.io-client"
-import { connect } from "mongoose";
+import { connect, set } from "mongoose";
 
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
@@ -10,7 +10,7 @@ axios.defaults.baseURL = backendURL;
 
 export const authContext = createContext();
 
-export const authProvider = ({ Children }) => {
+export const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(localStorage.getItem("token") || null);
     const [authUser, setAuthUser] = useState(null);
@@ -34,7 +34,7 @@ export const authProvider = ({ Children }) => {
 
     const login = async (state, Credentials) => {
         try {
-            const { data } = await axios.post('/api/auth/${state}', Credentials);
+            const { data } = await axios.post(`/api/auth/${state}`, Credentials);
             if (data.success) {
                 setAuthUser(data.userData);
                 connectSocket(data.userData); 
@@ -54,6 +54,28 @@ export const authProvider = ({ Children }) => {
 
     const logout = async () => {
         localStorage.removeItem("token");
+        setToken(null);
+        setAuthUser(null);
+        setOnlineUsers([]);
+        axios.defaults.headers.common["token"] = null;
+        toast.success("Logged out successfully");
+        socket?.disconnect();
+    }
+
+    // Update profile function to update user data
+
+    const updateProfile = async (body) => {
+        try {
+            const { data } = await axios.put("/api/auth/update-profile", body);
+            if (data.success) {
+                setAuthUser(data.userData);
+                toast.success("Profile updated successfully");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (error) {
+            toast.error(error.response.data.message);
+        }   
     }
 
     // connect socket function to handle socket connection and online users update
@@ -83,12 +105,15 @@ export const authProvider = ({ Children }) => {
         axios,
         authUser,
         onlineUsers,
-        socket
+        socket,
+        login,
+        logout,
+        updateProfile
     }
 
     return(
         <authContext.Provider value={value}>
-            {Children}
+            {children}
         </authContext.Provider>
     )
 }
