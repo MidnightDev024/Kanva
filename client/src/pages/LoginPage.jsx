@@ -1,19 +1,17 @@
 import React from 'react'
 import assets from '../assets/assets';
+import { authContext } from '../../context/authContext';
 
 const LoginPage = () => {
 
-  const [currState, setCurrState] = React.useState("Sign up")
+  const [currState, setCurrState] = React.useState("Sign up");
+  const [fullName, setFullName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [bio, setBio] = React.useState("");
+  const [isDataSubmited, setIsDataSubmited] = React.useState(false);
 
-  const [fullName, setFullName] = React.useState("")
-
-  const [email, setEmail] = React.useState("")
-
-  const [password, setPassword] = React.useState("")
-
-  const [bio, setBio] = React.useState("")  
-
-  const [isDataSubmited, setIsDataSubmited] = React.useState(false)
+  const { login } = React.useContext(authContext);
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -22,6 +20,9 @@ const LoginPage = () => {
       setIsDataSubmited(true);
       return;
     }
+
+    login(currState === "Sign up" ? 'signup' : 'login', {fullName ,email, password, bio});
+    
   }
 
   return (
