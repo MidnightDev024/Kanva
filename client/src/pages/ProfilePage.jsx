@@ -10,10 +10,10 @@ const ProfilePage = () => {
 
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
-  const [name, setName] = useState("Martin Smith");
-  const [bio, setBio] = useState("Hi, I'm Martin. I am using Kanva chat application.");
+  const [name, setName] = useState(authUser.fullName);
+  const [bio, setBio] = useState(authUser.bio);
 
-  const onSubmitHandler = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if(!selectedImage) {
       await updateProfile({fullName: name, bio});
@@ -47,7 +47,7 @@ const ProfilePage = () => {
               Save Changes  
             </button>
           </form>
-          <img className='max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10' src={assets.logo_icon} alt="" />
+          <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImage && 'rounded-full'}`} src={assets.logo_icon} alt="" />
         </div>
     </div> 
   )
