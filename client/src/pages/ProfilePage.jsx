@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import { authContext } from '../../context/authContext';
 
-
 const ProfilePage = () => {
 
   const { authUser, updateProfile } = useContext(authContext);
@@ -47,10 +46,10 @@ const ProfilePage = () => {
               Save Changes  
             </button>
           </form>
-          <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImage && 'rounded-full'}`} src={assets.logo_icon} alt="" />
+          <img className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImage && 'rounded-full'}`} src={authUser?.profilepic || assets.logo_icon} alt="" />
         </div>
     </div> 
   )
 }
 
-export default ProfilePage
+export default ProfilePage;
