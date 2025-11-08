@@ -1,10 +1,21 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
 import assets, { userDummyData } from '../assets/assets';
+import { useNavigate } from 'react-router-dom';
+import { authContext } from '../../context/authContext';
+import { chatContext } from '../../context/chatContext.jsx';
+import e from 'express';
 
-const Sidebar = ({ selectedUser, setSelectedUser }) => {
+const Sidebar = () => {
+
+  const {getUsers, users, selectedUser, setSelectedUser, unseenMessages, setUnseenMessages} = useContext(chatContext);
+
+  const { logout, onlineUsers } = useContext(authContext);
+
+  const { input, setInput } = React.useState(false);
 
   const navigate = useNavigate();
+
+  const filteredUsers = users.filter((user) =>{} )
 
   return (
     <div className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${selectedUser ? "max-md:hidden" : ''}`}>
@@ -23,7 +34,7 @@ const Sidebar = ({ selectedUser, setSelectedUser }) => {
 
         <div className='bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 mt-0'>
           <img src={assets.search_icon} alt="search" className='w-3' />
-          <input type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...'/>
+          <input onChange={()=>setInput(e.target.value)} type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...'/>
         </div>
 
         <div className='flex flex-col mt-7'>
