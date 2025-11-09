@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import assets, { userDummyData } from '../assets/assets';
+import React, { use, useContext } from 'react';
+import assets from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { authContext } from '../../context/authContext';
 import { chatContext } from '../../context/chatContext.jsx';
@@ -15,7 +15,11 @@ const Sidebar = () => {
 
   const navigate = useNavigate();
 
-  const filteredUsers = users.filter((user) =>{} )
+  const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users;
+
+  useEffect(() => {
+    getUsers();
+  }, [onlineUsers])
 
   return (
     <div className={`bg-[#8185B2]/10 h-full p-5 rounded-r-xl overflow-y-scroll text-white ${selectedUser ? "max-md:hidden" : ''}`}>
@@ -38,20 +42,20 @@ const Sidebar = () => {
         </div>
 
         <div className='flex flex-col mt-7'>
-          {userDummyData.map((user, index) => (
+          {filteredUsers.map((user, index) => (
             <div onClick={()=> {setSelectedUser(user)}} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id ? 'bg-[#282142]/50' : ''}`}>
               <img src={user?.profilePic || assets.avatar_icon} alt="profilePic" className='w-[35px] aspect-[1/1] rounded-full' />
               <div className='flex flex-col leading-5'>
                 <p>{user.fullName}</p>
                 {
-                  index < 3
+                  onlineUsers.includes(user._id)
                   ? <span className='text-green-400 text-xs'>Online</span>
                   : <span className='text-gray-400 text-xs'>Offline</span>
                 }
               </div>
               {
-                index > 2 && (
-                  <p className='absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full bg-violet-500/50'>{index}</p>
+                unseenMessages[user._id] > 0 && (
+                  <p className='absolute top-4 right-4 text-xs h-5 w-5 flex justify-center items-center rounded-full bg-violet-500/50'>{unseenMessages[user._id]}</p>
                 )
               }
             </div>
