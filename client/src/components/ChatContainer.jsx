@@ -1,10 +1,18 @@
 import React, { useEffect, useRef } from 'react';
 import assets, { messagesDummyData, userDummyData } from '../assets/assets';
 import { formateMessageTime } from '../library/utils';
+import { chatContext } from '../context/chatContext.jsx';
+import { authContext } from '../../context/authContext';
 
-const ChatContainer = ({ selectedUser, setSelectedUser }) => {
-  
-  const scrollEnd = useRef()
+const ChatContainer = () => {
+
+  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages} = React.useContext(chatContext);
+
+  const {authUser, onlineUsers} = React.useContext(authContext);
+
+  const scrollEnd = useRef();
+
+  const [input, setInput] = React.useState('');
 
   useEffect(()=>{
     if(scrollEnd.current){
@@ -44,8 +52,8 @@ const ChatContainer = ({ selectedUser, setSelectedUser }) => {
       {/* --------- bottom area --------- */}
       <div className='absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3'>
         <div className='flex-1 flex items-center bg-gray-100/12 px-3 rounded-full'>
-          <input type="text" placeholder='Sent a message...' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
-          <input type="file" id="image" accept='imgh/png, image/jpeg' hidden/>
+          <input onChange={(e) => setInput(e.target.value)} value={input} type="text" placeholder='Sent a message...' className='flex-1 text-sm p-3 border-none rounded-lg outline-none text-white placeholder-gray-400'/>
+          <input type="file" id="image" accept='image/png, image/jpeg' hidden />
           <label htmlFor="image">
             <img src={assets.gallery_icon} alt="" className='w-5 mr-2 cursor-pointer' /> 
           </label>
