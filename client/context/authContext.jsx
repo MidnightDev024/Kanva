@@ -1,9 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import { io } from "socket.io-client"
-import { connect, set } from "mongoose";
-
+import toast, { toast } from "react-hot-toast";
+import { io } from "socket.io-client";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendURL;
@@ -26,7 +24,7 @@ export const AuthProvider = ({ children }) => {
                 connectSocket(data.user);
             }
         } catch (error) {
-            Toaster.error(error.response.data.message);
+            toast.error(error.response.data.message);
         }
     }
 
