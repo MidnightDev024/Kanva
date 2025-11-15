@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import toast, { toast } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
