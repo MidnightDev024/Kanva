@@ -1,7 +1,7 @@
 import React from 'react';
 import assets from '../assets/assets';
-import { chatContext } from '../../context/chatContext.jsx';
-import { authContext } from '../../context/authContext';
+import { chatContext } from '../context/chatContext.jsx';
+import { authContext } from '../context/authContext.jsx';
 import { useEffect } from 'react';
 
 const RightSideBar = () => {
@@ -50,4 +50,4 @@ const RightSideBar = () => {
   ) : null
 }
 
-export default RightSideBar
+export default RightSideBar;

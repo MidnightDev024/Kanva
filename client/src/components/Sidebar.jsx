@@ -1,8 +1,8 @@
 import React, { use, useContext } from 'react';
 import assets from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
-import { authContext } from '../../context/authContext';
-import { chatContext } from '../../context/chatContext.jsx';
+import { authContext } from '../context/authContext.jsx';
+import { chatContext } from '../context/chatContext.jsx';
 import e from 'express';
 
 const Sidebar = () => {
@@ -67,4 +67,4 @@ const Sidebar = () => {
   )
 }
 
-export default Sidebar
+export default Sidebar;

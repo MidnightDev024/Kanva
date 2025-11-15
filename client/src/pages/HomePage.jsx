@@ -1,8 +1,8 @@
 import React from 'react'
 import Sidebar from "../components/Sidebar";
-import RightSideBar from "../../components/RightSideBar";
+import RightSideBar from "../components/RightSidebar";
 import ChatContainer from '../components/ChatContainer'
-import { chatContext } from '../../context/chatContext.jsx';
+import { chatContext } from '../context/chatContext';
 
 const HomePage = () => {
 

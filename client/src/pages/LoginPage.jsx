@@ -1,6 +1,6 @@
 import React from 'react'
 import assets from '../assets/assets';
-import { authContext } from '../../context/authContext';
+import { authContext } from '../context/authContext';
 
 const LoginPage = () => {
 

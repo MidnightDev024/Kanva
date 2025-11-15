@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
-import { authContext } from '../../context/authContext';
+import { authContext } from '../context/authContext';
 
 const ProfilePage = () => {
 

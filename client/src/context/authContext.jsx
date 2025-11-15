@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { set } from "mongoose";
 
 const backendURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.baseURL = backendURL;
@@ -106,7 +107,10 @@ export const AuthProvider = ({ children }) => {
         socket,
         login,
         logout,
-        updateProfile
+        updateProfile,
+        setAuthUser,
+        setToken,
+        token
     }
 
     return(

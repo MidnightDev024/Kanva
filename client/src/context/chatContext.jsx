@@ -81,7 +81,23 @@ export const ChatProvider = ({ children }) => {
         };
     }, [socket]);
 
-    const value = {
+    // const value = {
+        // messages,
+        // users,
+        // selectedUser,
+        // getUsers,
+        // getMessages,
+        // sendMessage,
+        // setSelectedUser,
+        // unseenMessages,
+        // setUnseenMessages
+    // }
+
+    // return (<chatContext.Provider value={value}>
+    //     {children}
+    // </chatContext.Provider>);
+return (
+        <chatContext.Provider value={{
         messages,
         users,
         selectedUser,
@@ -91,9 +107,8 @@ export const ChatProvider = ({ children }) => {
         setSelectedUser,
         unseenMessages,
         setUnseenMessages
-    }
-
-    return (<chatContext.Provider value={value}>
-        {children}
-    </chatContext.Provider>);
+        }}>
+            {children}
+        </chatContext.Provider>
+    );
 }
