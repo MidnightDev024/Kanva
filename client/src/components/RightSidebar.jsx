@@ -1,5 +1,5 @@
 import React from 'react';
-import assets, { imagesDummyData } from '../assets/assets';
+import assets from '../assets/assets';
 import { chatContext } from '../../context/chatContext.jsx';
 import { authContext } from '../../context/authContext';
 import { useEffect } from 'react';
