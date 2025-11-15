@@ -1,7 +1,22 @@
 import React from 'react';
 import assets, { imagesDummyData } from '../assets/assets';
+import { chatContext } from '../../context/chatContext.jsx';
+import { authContext } from '../../context/authContext';
+import { useEffect } from 'react';
 
-const RightSideBar = ({ selectedUser }) => {
+const RightSideBar = () => {
+
+  const {selectedUser, messages} = React.useContext(chatContext);
+  const {logout, onlineUsers} = React.useContext(authContext);
+  const [msgImages, setMsgImages] = React.useState([]);
+
+  // Get all the images from messages and set them to state
+  useEffect(() => {
+    setMsgImages(
+      messages.filter(msg => msg.image).map(msg => msg.image)
+    )
+  }, [messages]);
+
   return selectedUser ? (
     <div className='relative bg-[#8185B2]/10 h-full p-5 rounded-l-xl text-white'>
       {/* ------profile info----------- */}
@@ -10,7 +25,7 @@ const RightSideBar = ({ selectedUser }) => {
         <div className='text-center'>
           <h1 className='text-xl font-medium flex items-center justify-center gap-2'>
             {selectedUser.fullName}
-            <span className='w-2 h-2 rounded-full bg-green-500'></span>
+            {onlineUsers.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}
           </h1>
           <p className='text-gray-300 mt-2'>{selectedUser.bio}</p>
         </div>
@@ -20,7 +35,7 @@ const RightSideBar = ({ selectedUser }) => {
       <div className='px-5 text-xs'>
         <p>Media</p>
         <div className='mt-2 max-h-[200px] overflow-y-scroll grid grid-cols-2 gap-4 opacity-80'>
-          {imagesDummyData.map((url, index)=> (
+          {msgImages.map((url, index)=> (
             <div key={index} onClick={()=> window.open(url)} className='cursor-pointer rounded'>
               <img src={url} alt="" className='h-full rounded-md' />
             </div>
@@ -28,7 +43,7 @@ const RightSideBar = ({ selectedUser }) => {
         </div>
       </div>
       {/* ---------logout---------- */}
-      <button className='absolute bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
+      <button onClick={()=> logout()} className='absolute bottom-5 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-400 to-violet-600 text-white text-sm font-light py-2 px-20 rounded-full cursor-pointer'>
         Logout
       </button>
     </div>
