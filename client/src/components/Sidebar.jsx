@@ -3,7 +3,7 @@ import assets from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { authContext } from '../context/authContext.jsx';
 import { chatContext } from '../context/chatContext.jsx';
-import e from 'express';
+
 
 const Sidebar = () => {
 
@@ -38,7 +38,7 @@ const Sidebar = () => {
 
         <div className='bg-[#282142] rounded-full flex items-center gap-2 py-3 px-4 mt-0'>
           <img src={assets.search_icon} alt="search" className='w-3' />
-          <input onChange={()=>setInput(e.target.value)} type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...'/>
+          <input onChange={(e)=>setInput(e.target.value)} type="text" className='bg-transparent border-none outline-none text-white text-xs placeholder-[#c8c8c8] flex-1' placeholder='Search User...'/>
         </div>
 
         <div className='flex flex-col mt-7'>

@@ -14,16 +14,47 @@ const LoginPage = () => {
   const { login } = React.useContext(authContext);
 
   const onSubmitHandler = (event) => {
-    event.preventDefault();
+  event.preventDefault();
 
-    if(currState === "Sign up" && !isDataSubmited){
-      setIsDataSubmited(true);
+  if(currState === "Sign up" && !isDataSubmited){
+    if(!fullName || !email || !password){
+      toast.error("All fields are required");
       return;
     }
-
-    login(currState === "Sign up" ? 'signup' : 'login', {fullName ,email, password, bio});
-    
+    setIsDataSubmited(true);
+    return;
   }
+
+  if(currState === "Sign up" && isDataSubmited){
+    if(!fullName || !email || !password || !bio){
+      toast.error("All fields are required");
+      return;
+    }
+    login('signup', { fullname: fullName, email, password, bio });
+    return;
+  }
+
+  if(currState === "Login"){
+    if(!email || !password){
+      toast.error("All fields are required");
+      return;
+    }
+    login('login', { email, password });
+    return;
+  }
+}
+
+  // const onSubmitHandler = (event) => {
+  //   event.preventDefault();
+
+  //   if(currState === "Sign up" && !isDataSubmited){
+  //     setIsDataSubmited(true);
+  //     return;
+  //   }
+
+  //   login(currState === "Sign up" ? 'signup' : 'login', { fullname: fullName, email, password, bio });
+    
+  // }
 
   return (
     <div className='min-h-screen bg-cover bg-center flex items-center justify-center gap-8 sm:justify-evenly max-sm:flex-col backdrop-blur-2xl'>
