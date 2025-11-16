@@ -7,7 +7,7 @@ import {io, userSocketMap} from "../server.js";
 export const getUsersForSidebar = async (req, res)=> {
     try {
         const userId = req.user._id
-        const filteredUser = await User.find({ _id: { $ne: userId } }).select(-password);
+        const filteredUser = await User.find({ _id: { $ne: userId } }).select("-password");
         
         // count number of messages not seen from each user
         const unseenMessages = {}
