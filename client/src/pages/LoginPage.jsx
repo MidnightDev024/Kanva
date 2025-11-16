@@ -1,4 +1,5 @@
 import React from 'react'
+import toast from 'react-hot-toast';
 import assets from '../assets/assets';
 import { authContext } from '../context/authContext';
 

@@ -1,4 +1,4 @@
-import React, { use, useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import assets from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { authContext } from '../context/authContext.jsx';
@@ -9,9 +9,9 @@ const Sidebar = () => {
 
   const {getUsers, users, selectedUser, setSelectedUser, unseenMessages, setUnseenMessages} = useContext(chatContext);
 
-  const { logout, onlineUsers } = useContext(authContext);
+  const { onlineUsers } = useContext(authContext);
 
-  const { input, setInput } = React.useState(false);
+  const [input, setInput] = React.useState("");
 
   const navigate = useNavigate();
 
