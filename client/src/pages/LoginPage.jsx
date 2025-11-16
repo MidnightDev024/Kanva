@@ -1,4 +1,5 @@
 import React from 'react'
+import toast from 'react-hot-toast';
 import assets from '../assets/assets';
 import { authContext } from '../context/authContext';
 
@@ -15,6 +16,9 @@ const LoginPage = () => {
 
   const onSubmitHandler = (event) => {
   event.preventDefault();
+
+    // Debug: log current form state so we can see which field is empty
+    console.log('SIGNUP:', { fullName, email, password, bio, currState, isDataSubmited });
 
   if(currState === "Sign up" && !isDataSubmited){
     if(!fullName || !email || !password){
