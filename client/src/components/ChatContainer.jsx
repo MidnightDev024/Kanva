@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import assets from '../assets/assets.js';
+import toast from 'react-hot-toast';
 import { formateMessageTime } from '../library/utils.js';
 import { chatContext } from "../context/chatContext.jsx";
 import { authContext } from '../context/authContext.jsx';
@@ -43,7 +44,7 @@ const ChatContainer = () => {
   }, [selectedUser]);
 
   useEffect(()=>{
-    if(scrollEnd.current ||  messages){
+    if(scrollEnd.current && messages){
       scrollEnd.current.scrollIntoView({ behavior: "smooth" });
     }
   },[messages]);
