@@ -1,4 +1,4 @@
-import React, { use, useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import assets from '../assets/assets';
 import { useNavigate } from 'react-router-dom';
 import { authContext } from '../context/authContext.jsx';
@@ -7,12 +7,11 @@ import { chatContext } from '../context/chatContext.jsx';
 
 const Sidebar = () => {
 
-  const {getUsers, users, selectedUser, setSelectedUser, unseenMessages, setUnseenMessages} = useContext(chatContext);
+  const {getUsers, users, selectedUser, setSelectedUser, unseenMessages,setUnseenMessages} = useContext(chatContext);
 
-  const { logout, onlineUsers } = useContext(authContext);
+  const { onlineUsers } = useContext(authContext);
 
-  const { input, setInput } = React.useState(false);
-
+  const [input, setInput] = React.useState(false);
   const navigate = useNavigate();
 
   const filteredUsers = input ? users.filter((user) => user.fullName.toLowerCase().includes(input.toLowerCase())) : users;
@@ -31,7 +30,7 @@ const Sidebar = () => {
             <div className='absolute top-full right-0 z-20 w-32 p-5  rounded-md bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block'>
               <p onClick={()=>navigate('/profile')} className='cursor-pointer text-sm'>Edit Profile</p>
               <hr className='my-2 border-t border-gray-500' />
-              <p onClick={()=>navigate('/logout')} className='cursor-pointer text-sm'>Logout</p>
+              <p onClick={()=>{logout(); navigate('/login');}} className='cursor-pointer text-sm'>Logout</p>
             </div>
           </div>
         </div>
