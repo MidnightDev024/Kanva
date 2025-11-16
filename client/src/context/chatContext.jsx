@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { authContext } from "./authContext.jsx"; 
+import { authContext } from "./authContext.jsx";
 import toast from "react-hot-toast";
 
 export const chatContext = createContext();
