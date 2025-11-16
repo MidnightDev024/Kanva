@@ -1,4 +1,3 @@
-import { TbPasswordUser } from "react-icons/tb";
 import User from "../models/user.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../lib/utils.js";
