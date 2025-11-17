@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { authContext } from '../context/authContext.jsx';
 import { chatContext } from '../context/chatContext.jsx';
 
-
 const Sidebar = () => {
 
   const {getUsers, users, selectedUser, setSelectedUser, unseenMessages,setUnseenMessages} = useContext(chatContext);
@@ -60,7 +59,7 @@ const Sidebar = () => {
             <div onClick={()=> {setSelectedUser(user); setUnseenMessages(prev => ({...prev, [user._id]: 0}))}} key={index} className={`relative flex items-center gap-2 p-2 pl-4 rounded cursor-pointer max-sm:text-sm ${selectedUser?._id === user._id ? 'bg-[#282142]/50' : ''}`}>
               <img src={user?.profilePicture || assets.avatar_icon} alt="profilePic" className='w-[35px] aspect-[1/1] rounded-full' />
               <div className='flex flex-col leading-5'>
-                <p>{user.fullName}</p>
+                <p>{user.fullname}</p>
                 {
                   onlineUsers.includes(user._id)
                   ? <span className='text-green-400 text-xs'>Online</span>
