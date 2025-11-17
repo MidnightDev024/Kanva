@@ -85,7 +85,7 @@ export const ChatProvider = ({ children }) => {
         return () => {
             unsubscribeFromMessages();
         };
-    }, [socket]);
+    }, [socket, selectedUser]);
 
     // const value = {
         // messages,
