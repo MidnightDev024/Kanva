@@ -9,7 +9,7 @@ export const ChatProvider = ({ children }) => {
     const [messages, setMessages] = useState([]);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [unseenMessages, setUnseenMessages] = useState(0);
+    const [unseenMessages, setUnseenMessages] = useState({});
 
     const { socket, axios } = useContext(authContext);
 
@@ -85,7 +85,7 @@ export const ChatProvider = ({ children }) => {
         return () => {
             unsubscribeFromMessages();
         };
-    }, [socket]);
+    }, [socket, selectedUser]);
 
     // const value = {
         // messages,
