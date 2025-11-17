@@ -31,13 +31,22 @@ const ProfilePage = () => {
 
   }
 
+  const handleBackClick = () => {
+    const hasChanges = (name !== (authUser?.fullName || '')) || (bio !== (authUser?.bio || '')) || Boolean(selectedImage);
+    if (!hasChanges) return navigate(-1);
+    const ok = window.confirm('Discard changes and go back?');
+    if (ok) navigate(-1);
+  }
+
   return (
     <div className='min-h-screen bg-cover bg-no-repeat flex items-center justify-center'> 
-        <div className='w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
+        <div className='relative w-5/6 max-w-2xl backdrop-blur-2xl text-gray-300 border-2 border-gray-600 flex items-center justify-between max-sm:flex-col-reverse rounded-lg'>
+          <img onClick={handleBackClick} src={assets.arrow_icon} alt="back" className='absolute left-4 top-4 w-6 h-6 cursor-pointer' />
           <form onSubmit={onSubmitHandler} className='flex flex-col gap-5 p-10 flex-1'>
             <h3 className='text-lg'>Profile Detail</h3>
             <label onClick={() => document.getElementById('avatar').click()} htmlFor="avatar" className='flex items-center gap-3 cursor-pointer'>
-            <input onChange={(e)=>setSelectedImage(e.target.files[0])} type="file" id='avatar' accept='.png, .jpg, .jpeg' hidden />            <img required src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
+            <input onChange={(e)=>setSelectedImage(e.target.files[0])} type="file" id='avatar' accept='.png, .jpg, .jpeg' hidden />            
+            <img required src={selectedImage ? URL.createObjectURL(selectedImage) : assets.avatar} alt="" className={`w-12 h-12 ${selectedImage && 'rounded-full'}`} />
             Upload Profile image
             </label>
             <input onChange={(e)=>setName(e.target.value)} value={name} type="text" required placeholder='Your Name' className='p-2 border border-gary-500 rounded-md focus:outline-none focus:ring-2 focud:ring-violet-500'/>
