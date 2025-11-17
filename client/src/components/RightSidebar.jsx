@@ -21,7 +21,7 @@ const RightSideBar = () => {
     <div className='relative bg-[#8185B2]/10 h-full p-5 rounded-l-xl text-white'>
       {/* ------profile info----------- */}
       <div className='flex flex-col items-center gap-4'>
-        <img src={selectedUser?.profilePic || assets.avatar_icon} alt="" className='w-20 aspect-[1/1] rounded-full' />
+        <img src={selectedUser?.profilePicture || assets.avatar_icon} alt="" className='w-20 aspect-[1/1] rounded-full' />
         <div className='text-center'>
           <h1 className='text-xl font-medium flex items-center justify-center gap-2'>
             {selectedUser.fullName}
