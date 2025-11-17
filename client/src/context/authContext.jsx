@@ -67,8 +67,20 @@ export const AuthProvider = ({ children }) => {
         try {
             const { data } = await axios.put("/api/auth/updateProfile", body);
             if (data.success) {
+                // Update local auth user immediately
                 setAuthUser(data.userData);
-                toast  .success("Profile updated successfully");
+                toast.success("Profile updated successfully");
+
+                // Ensure we have the freshest user data from the server
+                try {
+                    const refreshed = await axios.get("/api/auth/check");
+                    if (refreshed.data?.success) {
+                        setAuthUser(refreshed.data.user);
+                    }
+                } catch (err) {
+                    // Non-fatal; we already updated local state
+                    console.warn('Could not refresh auth user after profile update', err?.message || err);
+                }
             } else {
                 toast.error(data.message);
             }
