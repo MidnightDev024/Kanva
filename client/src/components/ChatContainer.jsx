@@ -7,7 +7,9 @@ import { authContext } from '../context/authContext.jsx';
 
 const ChatContainer = () => {
 
-  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages} = React.useContext(chatContext);
+  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages, clearMessages} = React.useContext(chatContext);
+
+  const { axios } = React.useContext(authContext);
 
   const {authUser, onlineUsers} = React.useContext(authContext);
 
@@ -50,16 +52,36 @@ const ChatContainer = () => {
   },[messages]);
   
   return selectedUser ?  (
-    <div className='h-full overflow-scroll relative backdrop-blur-lg'>
+      <div className='h-full overflow-scroll relative' style={{ backgroundImage: `url(${assets.chatBg})`, backgroundSize: 'cover' }}> {/* add image.png in background for ChatContainer */}
       {/* ---------- Header -------------- */}
       <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
-        <img src={selectedUser.profilePicture || assets.avatar_icon} alt="User Profile Pic" className='w-8 rounded-full'/>
+        <img src={selectedUser?.profilePicture || assets.avatar_icon} alt="User Profile Pic" className='w-8 rounded-full'/>
         <p className='flex-1 text-lg text-white flex items-center gap-2'>
-          {selectedUser.fullname}
-          {onlineUsers.includes(selectedUser._id) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
+          {selectedUser?.fullName || selectedUser?.fullname || 'Unknown'}
+          {((onlineUsers || []).includes(selectedUser._id)) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
         </p>
-        <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
-        <img src={assets.help_icon} alt="" className='max-md:hidden max-w-6.3 max-h-7'/>
+        <div className='flex items-center gap-3'>
+          <button onClick={async ()=>{
+            const ok = window.confirm('Delete this conversation? This cannot be undone.');
+            if(!ok) return;
+            try{
+              const { data } = await axios.delete(`/api/messages/clear/${selectedUser._id}`);
+              if(data.success){
+                clearMessages();
+                setSelectedUser(null);
+                toast.success('Conversation deleted');
+              } else {
+                toast.error(data.message || 'Could not delete conversation');
+              }
+            } catch(err){
+              toast.error(err?.response?.data?.message || err.message || 'Delete failed');
+            }
+          }} className='text-sm text-red-400 hover:text-red-300'>
+            Delete
+          </button>
+          <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
+        </div>
+        <img src={assets.info_icon} alt="" className='max-md:hidden max-w-6.3 max-h-7'/>
       </div>
       {/* ---------- chat area ------------ */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
