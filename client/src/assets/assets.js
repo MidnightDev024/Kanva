@@ -1,6 +1,6 @@
 import avatar_icon from './avatar_icon.png'
 import gallery_icon from './gallery_icon.svg'
-import help_icon from './help_icon.png'
+import info_icon from './info_icon.png'
 import logo_icon from './logo_icon.svg'
 import logo_big from './logo_big.svg'
 import logo from './logo1.svg'
@@ -13,6 +13,7 @@ import search_icon from './search_icon.png'
 import send_button from './send_button.svg'
 import menu_icon from './menu_icon.png'
 import arrow_icon from './arrow_icon.png'
+import image from './image.png'
 import code from './code.svg'
 import bgImage from './bgImage.svg'
 import pic1 from './pic1.png'
@@ -25,7 +26,7 @@ import img2 from './img2.jpg'
 const assets = {
     avatar_icon,
     gallery_icon,
-    help_icon,
+    info_icon,
     logo_big,
     logo_icon,
     logo,
@@ -33,6 +34,7 @@ const assets = {
     send_button,
     menu_icon,
     arrow_icon,
+    chatBg: image,
     code,
     bgImage,
     profile_martin
