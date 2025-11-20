@@ -7,7 +7,7 @@ import { authContext } from '../context/authContext.jsx';
 
 const ChatContainer = () => {
 
-  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages, clearMessages} = React.useContext(chatContext);
+  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages, clearMessages, setRightSidebarOpen} = React.useContext(chatContext);
 
   const { axios } = React.useContext(authContext);
 
@@ -76,12 +76,12 @@ const ChatContainer = () => {
             } catch(err){
               toast.error(err?.response?.data?.message || err.message || 'Delete failed');
             }
-          }} className='text-sm text-red-400 hover:text-red-300'>
+          }} className='text-sm text-red-400 hover:text-red-300 cursor-pointer px-2 py-1 rounded'>
             Delete
           </button>
           <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
         </div>
-        <img src={assets.info_icon} alt="" className='max-md:hidden max-w-6.3 max-h-7'/>
+        <img onClick={() => setRightSidebarOpen(prev => !prev)} src={assets.info_icon} alt="Info" className='max-md:hidden max-w-6.3 max-h-7 cursor-pointer'/>
       </div>
       {/* ---------- chat area ------------ */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
