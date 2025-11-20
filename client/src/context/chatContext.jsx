@@ -10,6 +10,7 @@ export const ChatProvider = ({ children }) => {
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [unseenMessages, setUnseenMessages] = useState({});
+    const [rightSidebarOpen, setRightSidebarOpen] = useState(false);
 
     const { socket, axios } = useContext(authContext);
 
@@ -57,6 +58,9 @@ export const ChatProvider = ({ children }) => {
             toast.error(error.message);
         }
     }
+
+    // clear messages in the current conversation (frontend state)
+    const clearMessages = () => setMessages([]);
 
     // function to subscribe to message for selected user
     const subscribeToMessages = () => {
@@ -112,7 +116,10 @@ return (
         sendMessage,
         setSelectedUser,
         unseenMessages,
-        setUnseenMessages
+        setUnseenMessages,
+        clearMessages,
+        rightSidebarOpen,
+        setRightSidebarOpen
         }}>
             {children}
         </chatContext.Provider>
