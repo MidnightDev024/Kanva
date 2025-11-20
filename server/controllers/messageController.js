@@ -90,3 +90,23 @@ export const sendMessage = async (req, res) => {
         res.json({success: false, message: error.message})
     }
 }
+
+// delete all messages between logged-in user and selected user
+export const deleteConversation = async (req, res) => {
+    try {
+        const { id: selectedUserId } = req.params;
+        const myId = req.user._id;
+
+        await Message.deleteMany({
+            $or: [
+                { senderId: myId, receiverId: selectedUserId },
+                { senderId: selectedUserId, receiverId: myId }
+            ]
+        });
+
+        return res.json({ success: true, message: 'Conversation deleted' });
+    } catch (error) {
+        console.log(error.message);
+        return res.json({ success: false, message: error.message });
+    }
+}
