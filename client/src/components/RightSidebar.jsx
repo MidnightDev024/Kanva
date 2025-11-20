@@ -24,7 +24,7 @@ const RightSideBar = () => {
         <img src={selectedUser?.profilePicture || assets.avatar_icon} alt="" className='w-20 aspect-[1/1] rounded-full' />
         <div className='text-center'>
           <h1 className='text-xl font-medium flex items-center justify-center gap-2'>
-            {selectedUser.fullname}
+            {selectedUser.fullName}
             {onlineUsers.includes(selectedUser._id) && <p className='w-2 h-2 rounded-full bg-green-500'></p>}
           </h1>
           <p className='text-gray-300 mt-2'>{selectedUser.bio}</p>
