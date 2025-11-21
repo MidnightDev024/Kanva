@@ -62,6 +62,12 @@ export const ChatProvider = ({ children }) => {
     // clear messages in the current conversation (frontend state)
     const clearMessages = () => setMessages([]);
 
+    // remove single message from state
+    const removeMessage = (id) => setMessages(prev => prev.filter(m => m._id !== id));
+
+    // update single message in state
+    const updateMessage = (id, newFields) => setMessages(prev => prev.map(m => m._id === id ? {...m, ...newFields} : m));
+
     // function to subscribe to message for selected user
     const subscribeToMessages = () => {
         if (!socket) return;
@@ -77,6 +83,14 @@ export const ChatProvider = ({ children }) => {
                 }))
             }
         })
+
+        socket.on('messageDeleted', ({ messageId }) => {
+            setMessages(prev => prev.filter(m => m._id !== messageId));
+        });
+
+        socket.on('messageUpdated', (updatedMessage) => {
+            setMessages(prev => prev.map(m => m._id === updatedMessage._id ? updatedMessage : m));
+        });
     };
 
     // function to unsubscribe from messages
@@ -119,7 +133,9 @@ return (
         setUnseenMessages,
         clearMessages,
         rightSidebarOpen,
-        setRightSidebarOpen
+        setRightSidebarOpen,
+        removeMessage,
+        updateMessage
         }}>
             {children}
         </chatContext.Provider>
