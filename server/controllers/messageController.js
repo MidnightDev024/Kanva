@@ -123,10 +123,15 @@ export const deleteMessageForMe = async (req, res) => {
             return res.json({ success: false, message: 'Message not found' });
         }
 
-        // Add user to deletedFor array if not already present
-        if (!message.deletedFor.includes(userId)) {
-            message.deletedFor.push(userId);
-            await message.save();
+        // Add user to deletedFor array using $addToSet for atomic operation
+        const result = await Message.findByIdAndUpdate(
+            messageId,
+            { $addToSet: { deletedFor: userId } },
+            { new: true }
+        );
+
+        if (!result) {
+            return res.json({ success: false, message: 'Failed to update message' });
         }
 
         // If both users have deleted it, physically delete it
@@ -134,8 +139,15 @@ export const deleteMessageForMe = async (req, res) => {
             ? message.receiverId 
             : message.senderId;
         
-        if (message.deletedFor.includes(otherUserId)) {
-            await Message.findByIdAndDelete(messageId);
+        const bothDeleted = result.deletedFor.some(id => id.toString() === otherUserId.toString());
+        
+        if (bothDeleted && result.deletedFor.length >= 2) {
+            try {
+                await Message.findByIdAndDelete(messageId);
+            } catch (deleteError) {
+                // If deletion fails (e.g., already deleted), just log and continue
+                console.log('Message may have already been deleted:', deleteError.message);
+            }
         }
 
         return res.json({ success: true, message: 'Message deleted for you' });
@@ -163,10 +175,17 @@ export const deleteMessageForEveryone = async (req, res) => {
 
         await Message.findByIdAndDelete(messageId);
 
-        // Emit socket event to notify the receiver
+        // Emit socket event to notify both sender and receiver
         const receiverSocketId = userSocketMap[message.receiverId.toString()];
+        const senderSocketId = userSocketMap[message.senderId.toString()];
+        
         if (receiverSocketId) {
             io.to(receiverSocketId).emit("messageDeleted", { messageId });
+        }
+        
+        // Also notify sender's other sessions/devices
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messageDeleted", { messageId });
         }
 
         return res.json({ success: true, message: 'Message deleted for everyone' });
