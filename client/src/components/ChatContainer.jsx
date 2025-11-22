@@ -7,7 +7,7 @@ import { authContext } from '../context/authContext.jsx';
 
 const ChatContainer = () => {
 
-  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages, clearMessages, setRightSidebarOpen} = React.useContext(chatContext);
+  const {messages, selectedUser, setSelectedUser, sendMessage, getMessages, clearMessages, setRightSidebarOpen, removeMessage} = React.useContext(chatContext);
 
   const { axios } = React.useContext(authContext);
 
@@ -16,6 +16,8 @@ const ChatContainer = () => {
   const scrollEnd = useRef();
 
   const [input, setInput] = React.useState('');
+  const [hoveredMessageId, setHoveredMessageId] = React.useState(null);
+  const [showDeleteMenu, setShowDeleteMenu] = React.useState(null);
 
   // handle send message
   const handleSendMessage = async (e) => {
@@ -37,6 +39,38 @@ const ChatContainer = () => {
       e.target.value = "";
     }
     reader.readAsDataURL(file);
+  }
+
+  // Handle delete message for me
+  const handleDeleteForMe = async (messageId) => {
+    try {
+      const { data } = await axios.delete(`/api/messages/delete-for-me/${messageId}`);
+      if (data.success) {
+        removeMessage(messageId);
+        toast.success('Message deleted');
+      } else {
+        toast.error(data.message || 'Could not delete message');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err.message || 'Delete failed');
+    }
+    setShowDeleteMenu(null);
+  }
+
+  // Handle delete message for everyone
+  const handleDeleteForEveryone = async (messageId) => {
+    try {
+      const { data } = await axios.delete(`/api/messages/delete-for-everyone/${messageId}`);
+      if (data.success) {
+        removeMessage(messageId);
+        toast.success('Message deleted for everyone');
+      } else {
+        toast.error(data.message || 'Could not delete message');
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err.message || 'Delete failed');
+    }
+    setShowDeleteMenu(null);
   }
 
   useEffect(()=>{
@@ -85,19 +119,61 @@ const ChatContainer = () => {
       </div>
       {/* ---------- chat area ------------ */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
-        {messages.filter(Boolean).map((msg, index)=> (
-          <div key={index} className={`flex items-end gap-2 justify-end ${msg.senderId !== authUser._id && 'flex-row-reverse'}`}>
-            {msg.image ? (
-              <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
-            ) : (
-              <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${msg.senderId !== authUser._id ? 'rounded-bg-none' : 'rounded-bl-none'}`}>{msg.text}</p>
-            )}
-            <div className='text-center text-xs'>
-              <img src={msg.senderId === authUser._id ? authUser?.profilePicture || assets.avatar_icon : selectedUser?.profilePicture || assets.avatar_icon} alt="" className='w-7 rounded-full' />
-              <p className='text-gray-500'>{formateMessageTime(msg.createdAt)}</p>
+        {messages.filter(Boolean).map((msg, index)=> {
+          const isSender = msg.senderId === authUser._id;
+          return (
+            <div 
+              key={index} 
+              className={`flex items-end gap-2 justify-end ${!isSender && 'flex-row-reverse'} relative group`}
+              onMouseEnter={() => setHoveredMessageId(msg._id)}
+              onMouseLeave={() => {
+                setHoveredMessageId(null);
+                if(showDeleteMenu !== msg._id) setShowDeleteMenu(null);
+              }}
+            >
+              {msg.image ? (
+                <img src={msg.image} alt="" className='max-w-[230px] border border-gray-700 rounded-lg overflow-hidden mb-8' />
+              ) : (
+                <p className={`p-2 max-w-[200px] md:text-sm font-light rounded-lg mb-8 break-all bg-violet-500/30 text-white ${!isSender ? 'rounded-bg-none' : 'rounded-bl-none'}`}>{msg.text}</p>
+              )}
+              
+              {/* Delete Menu Button */}
+              {hoveredMessageId === msg._id && (
+                <button
+                  onClick={() => setShowDeleteMenu(showDeleteMenu === msg._id ? null : msg._id)}
+                  className={`absolute top-0 text-gray-400 hover:text-white px-2 py-1 text-xs ${isSender ? 'right-0' : 'left-0'}`}
+                >
+                  ⋮
+                </button>
+              )}
+              
+              {/* Delete Dropdown Menu */}
+              {showDeleteMenu === msg._id && (
+                <div className={`absolute top-6 bg-gray-800 rounded-lg shadow-lg py-1 z-10 ${isSender ? 'right-0' : 'left-0'}`}>
+                  <button
+                    onClick={() => handleDeleteForMe(msg._id)}
+                    className='block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700 whitespace-nowrap'
+                  >
+                    Delete for me
+                  </button>
+                  {isSender && (
+                    <button
+                      onClick={() => handleDeleteForEveryone(msg._id)}
+                      className='block w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700 whitespace-nowrap'
+                    >
+                      Delete for everyone
+                    </button>
+                  )}
+                </div>
+              )}
+              
+              <div className='text-center text-xs'>
+                <img src={isSender ? authUser?.profilePicture || assets.avatar_icon : selectedUser?.profilePicture || assets.avatar_icon} alt="" className='w-7 rounded-full' />
+                <p className='text-gray-500'>{formateMessageTime(msg.createdAt)}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={scrollEnd}></div>
       </div>
       {/* --------- bottom area --------- */}
