@@ -35,7 +35,8 @@ export const getMessages = async (req, res) => {
             $or: [
                 {senderId: myId, receiverId: selectedUserId},
                 {senderId: selectedUserId, receiverId: myId}
-            ]
+            ],
+            deletedFor: { $ne: myId } // Exclude messages deleted for the logged-in user
         });
         await Message.updateMany({senderId: selectedUserId, receiverId: myId}, {seen: true})
 
@@ -105,6 +106,89 @@ export const deleteConversation = async (req, res) => {
         });
 
         return res.json({ success: true, message: 'Conversation deleted' });
+    } catch (error) {
+        console.log(error.message);
+        return res.json({ success: false, message: error.message });
+    }
+}
+
+// delete message for current user (mark as deleted for them)
+export const deleteMessageForMe = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const userId = req.user._id;
+
+        const message = await Message.findById(messageId);
+        if (!message) {
+            return res.json({ success: false, message: 'Message not found' });
+        }
+
+        // Add user to deletedFor array using $addToSet for atomic operation
+        const result = await Message.findByIdAndUpdate(
+            messageId,
+            { $addToSet: { deletedFor: userId } },
+            { new: true }
+        );
+
+        if (!result) {
+            return res.json({ success: false, message: 'Failed to update message' });
+        }
+
+        // If both users have deleted it, physically delete it
+        const otherUserId = message.senderId.toString() === userId.toString() 
+            ? message.receiverId 
+            : message.senderId;
+        
+        const bothDeleted = result.deletedFor.some(id => id.toString() === otherUserId.toString());
+        
+        if (bothDeleted && result.deletedFor.length >= 2) {
+            try {
+                await Message.findByIdAndDelete(messageId);
+            } catch (deleteError) {
+                // If deletion fails (e.g., already deleted), just log and continue
+                console.log('Message may have already been deleted:', deleteError.message);
+            }
+        }
+
+        return res.json({ success: true, message: 'Message deleted for you' });
+    } catch (error) {
+        console.log(error.message);
+        return res.json({ success: false, message: error.message });
+    }
+}
+
+// delete message for everyone (only sender can do this)
+export const deleteMessageForEveryone = async (req, res) => {
+    try {
+        const { messageId } = req.params;
+        const userId = req.user._id;
+
+        const message = await Message.findById(messageId);
+        if (!message) {
+            return res.json({ success: false, message: 'Message not found' });
+        }
+
+        // Only sender can delete for everyone
+        if (message.senderId.toString() !== userId.toString()) {
+            return res.json({ success: false, message: 'Only sender can delete for everyone' });
+        }
+
+        await Message.findByIdAndDelete(messageId);
+
+        // Emit socket event to notify both sender and receiver
+        const receiverSocketId = userSocketMap[message.receiverId.toString()];
+        const senderSocketId = userSocketMap[message.senderId.toString()];
+        
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("messageDeleted", { messageId });
+        }
+        
+        // Also notify sender's other sessions/devices
+        if (senderSocketId) {
+            io.to(senderSocketId).emit("messageDeleted", { messageId });
+        }
+
+        return res.json({ success: true, message: 'Message deleted for everyone' });
     } catch (error) {
         console.log(error.message);
         return res.json({ success: false, message: error.message });
