@@ -15,6 +15,8 @@ const ChatContainer = () => {
 
   const scrollEnd = useRef();
 
+  const headerMenuRef = useRef();
+
   const [input, setInput] = React.useState('');
 
   const [hoveredMessageId, setHoveredMessageId] = React.useState(null);
@@ -92,7 +94,7 @@ const ChatContainer = () => {
   // Close header menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showHeaderMenu && !event.target.closest('.relative')) {
+      if (showHeaderMenu && headerMenuRef.current && !headerMenuRef.current.contains(event.target)) {
         setShowHeaderMenu(false);
       }
     };
@@ -109,7 +111,7 @@ const ChatContainer = () => {
           {selectedUser?.fullName || selectedUser?.fullname || 'Unknown'}
           {((onlineUsers || []).includes(selectedUser._id)) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
         </p>
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-3' ref={headerMenuRef}>
           <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
           <img 
             onClick={() => setShowHeaderMenu(prev => !prev)} 
@@ -150,6 +152,7 @@ const ChatContainer = () => {
                 }}
                 className='flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700'
               >
+                <span className='w-4 h-4 flex items-center justify-center text-base'>🗑️</span>
                 Delete
               </button>
             </div>
