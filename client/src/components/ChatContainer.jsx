@@ -15,11 +15,15 @@ const ChatContainer = () => {
 
   const scrollEnd = useRef();
 
+  const headerMenuRef = useRef();
+
   const [input, setInput] = React.useState('');
 
   const [hoveredMessageId, setHoveredMessageId] = React.useState(null);
 
   const [showDeleteMenu, setShowDeleteMenu] = React.useState(false);
+
+  const [showHeaderMenu, setShowHeaderMenu] = React.useState(false);
 
   // handle send message
   const handleSendMessage = async (e) => {
@@ -86,38 +90,74 @@ const ChatContainer = () => {
       scrollEnd.current.scrollIntoView({ behavior: "smooth" });
     }
   },[messages]);
+
+  // Close header menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (showHeaderMenu && headerMenuRef.current && !headerMenuRef.current.contains(event.target)) {
+        setShowHeaderMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showHeaderMenu]);
   
   return selectedUser ?  (
       <div className='h-full overflow-scroll relative' style={{ backgroundImage: `url(${assets.chatBg})`, backgroundSize: 'cover' }}> {/* add image.png in background for ChatContainer */}
       {/* ---------- Header -------------- */}
-      <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500'>
+      <div className='flex items-center gap-3 py-3 mx-4 border-b border-stone-500 relative'>
         <img src={selectedUser?.profilePicture || assets.avatar_icon} alt="User Profile Pic" className='w-8 rounded-full'/>
         <p className='flex-1 text-lg text-white flex items-center gap-2'>
           {selectedUser?.fullName || selectedUser?.fullname || 'Unknown'}
           {((onlineUsers || []).includes(selectedUser._id)) && <span className='w-2 h-2 rounded-full bg-green-500'></span>}
         </p>
-        <div className='flex items-center gap-3'>
-          <button onClick={async ()=>{
-            const ok = window.confirm('Delete this conversation? This cannot be undone.');
-            if(!ok) return;
-            try{
-              const { data } = await axios.delete(`/api/messages/clear/${selectedUser._id}`);
-              if(data.success){
-                clearMessages();
-                setSelectedUser(null);
-                toast.success('Conversation deleted');
-              } else {
-                toast.error(data.message || 'Could not delete conversation');
-              }
-            } catch(err){
-              toast.error(err?.response?.data?.message || err.message || 'Delete failed');
-            }
-          }} className='text-sm text-red-400 hover:text-red-300 cursor-pointer px-2 py-1 rounded'>
-            Delete
-          </button>
+        <div className='flex items-center gap-3' ref={headerMenuRef}>
           <img onClick={() => setSelectedUser(null)} src={assets.arrow_icon} alt="" className='md:hidden max-w-7' />
+          <img 
+            onClick={() => setShowHeaderMenu(prev => !prev)} 
+            src={assets.menu_icon} 
+            alt="Menu" 
+            className='max-w-6 cursor-pointer'
+          />
+          {/* Header Dropdown Menu */}
+          {showHeaderMenu && (
+            <div className='absolute top-14 right-4 bg-gray-800 rounded-lg shadow-lg py-1 z-10 min-w-[150px]'>
+              <button
+                onClick={() => {
+                  setRightSidebarOpen(prev => !prev);
+                  setShowHeaderMenu(false);
+                }}
+                className='flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700'
+              >
+                <img src={assets.info_icon} alt="Info" className='w-4 h-4' />
+                Info
+              </button>
+              <button
+                onClick={async () => {
+                  setShowHeaderMenu(false);
+                  const ok = window.confirm('Delete this conversation? This cannot be undone.');
+                  if(!ok) return;
+                  try{
+                    const { data } = await axios.delete(`/api/messages/clear/${selectedUser._id}`);
+                    if(data.success){
+                      clearMessages();
+                      setSelectedUser(null);
+                      toast.success('Conversation deleted');
+                    } else {
+                      toast.error(data.message || 'Could not delete conversation');
+                    }
+                  } catch(err){
+                    toast.error(err?.response?.data?.message || err.message || 'Delete failed');
+                  }
+                }}
+                className='flex items-center gap-2 w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-gray-700'
+              >
+                <span className='w-4 h-4 flex items-center justify-center text-base'>🗑️</span>
+                Delete
+              </button>
+            </div>
+          )}
         </div>
-        <img onClick={() => setRightSidebarOpen(prev => !prev)} src={assets.info_icon} alt="Info" className='max-md:hidden max-w-6.3 max-h-7 cursor-pointer'/>
       </div>
       {/* ---------- chat area ------------ */}
       <div className='flex flex-col h-[calc(100%-120px)] overflow-y-scroll p-3 pb-6'>
